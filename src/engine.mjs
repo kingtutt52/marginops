@@ -1,5 +1,5 @@
 /** Pure financial decision engine. USD throughout; month 1 is the first forecast month. */
-export const MODEL_VERSION = '1.0.0';
+export const MODEL_VERSION = '2.0.0';
 const sum = values => values.reduce((a, b) => a + b, 0);
 const fail = message => { throw new RangeError(message); };
 function number(value, label, min = 0, max = 1e12, integer = false) {
