@@ -1,0 +1,72 @@
+[
+  {
+    "initiativeId": "cloud",
+    "period": "2026-09",
+    "benefitPool": "cloud-compute",
+    "observedBenefit": 61000,
+    "counterfactualBenefit": 7000,
+    "incrementalOpex": 4000,
+    "implementationExpense": 0,
+    "status": "approved",
+    "evidenceRef": "FIN-DEMO-001",
+    "reviewer": "Demo finance controller",
+    "approvedAt": "2026-10-02",
+    "note": "Synthetic illustration; not an actual financial result."
+  },
+  {
+    "initiativeId": "procurement",
+    "period": "2026-09",
+    "benefitPool": "supplier-rates",
+    "observedBenefit": 74000,
+    "counterfactualBenefit": 6000,
+    "incrementalOpex": 2000,
+    "implementationExpense": 0,
+    "status": "approved",
+    "evidenceRef": "FIN-DEMO-002",
+    "reviewer": "Demo finance controller",
+    "approvedAt": "2026-10-02",
+    "note": "Synthetic illustration; not an actual financial result."
+  },
+  {
+    "initiativeId": "license",
+    "period": "2026-09",
+    "benefitPool": "software-seats",
+    "observedBenefit": 24000,
+    "counterfactualBenefit": 0,
+    "incrementalOpex": 1000,
+    "implementationExpense": 0,
+    "status": "approved",
+    "evidenceRef": "FIN-DEMO-003",
+    "reviewer": "Demo finance controller",
+    "approvedAt": "2026-10-02",
+    "note": "Synthetic illustration; not an actual financial result."
+  },
+  {
+    "initiativeId": "quality",
+    "period": "2026-09",
+    "benefitPool": "scrap-rework",
+    "observedBenefit": 33000,
+    "counterfactualBenefit": 5000,
+    "incrementalOpex": 3000,
+    "implementationExpense": 0,
+    "status": "pending",
+    "evidenceRef": "FIN-DEMO-004",
+    "reviewer": "",
+    "approvedAt": "",
+    "note": "Synthetic illustration; not an actual financial result."
+  },
+  {
+    "initiativeId": "automation",
+    "period": "2026-09",
+    "benefitPool": "service-labor",
+    "observedBenefit": 45000,
+    "counterfactualBenefit": 8000,
+    "incrementalOpex": 8000,
+    "implementationExpense": 0,
+    "status": "rejected",
+    "evidenceRef": "FIN-DEMO-005",
+    "reviewer": "",
+    "approvedAt": "",
+    "note": "Synthetic illustration; not an actual financial result."
+  }
+]

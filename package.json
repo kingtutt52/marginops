@@ -1,0 +1,15 @@
+{
+  "name": "marginops",
+  "version": "1.0.0",
+  "private": true,
+  "description": "An auditable EBITDA improvement decision engine and interactive value creation workbench.",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node src/server.mjs",
+    "test": "node --test",
+    "check": "node --check src/engine.mjs && node --check src/server.mjs && node --check web/app.mjs",
+    "report": "node src/report.mjs"
+  },
+  "license": "MIT"
+}
