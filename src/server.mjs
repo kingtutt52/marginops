@@ -3,12 +3,17 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { optimize, portfolio, simulate, reconcileLedger } from './engine.mjs';
 
+import { enterpriseCase, buildEnterprise } from './enterprise.mjs';
+
 const root = new URL('../', import.meta.url);
 const items = JSON.parse(await readFile(new URL('data/initiatives.json', root)));
+const enterpriseDefinition = JSON.parse(await readFile(new URL('data/enterprise.json', root)));
 const ledger = JSON.parse(await readFile(new URL('data/ledger.json', root)));
 const routes = new Map([
   ['/', ['web/index.html','text/html']], ['/web/app.mjs',['web/app.mjs','text/javascript']],
   ['/web/style.css',['web/style.css','text/css']], ['/src/engine.mjs',['src/engine.mjs','text/javascript']],
+  ['/src/enterprise.mjs',['src/enterprise.mjs','text/javascript']],
+  ['/data/enterprise.json',['data/enterprise.json','application/json']],
   ['/data/initiatives.json',['data/initiatives.json','application/json']], ['/data/ledger.json',['data/ledger.json','application/json']]
 ]);
 export function createServer() {
@@ -20,6 +25,7 @@ export function createServer() {
     try {
       const path = new URL(req.url,'http://localhost').pathname;
       if (req.method === 'GET' && path === '/api/health') return send(200,{status:'ok',mode:'synthetic-demo'});
+      if (req.method === 'GET' && path === '/api/enterprise') return send(200,buildEnterprise(enterpriseDefinition));
       if (req.method === 'GET' && path === '/api/ledger') return send(200,reconcileLedger(ledger));
       if (req.method === 'POST' && ['/api/optimize','/api/evaluate'].includes(path)) {
         let body = '', length = 0;
@@ -31,6 +37,8 @@ export function createServer() {
         const payload = JSON.parse(body || '{}');
         if (!payload || Array.isArray(payload) || typeof payload !== 'object') throw new RangeError('Expected a JSON object');
         const scenario = payload.scenario ?? {};
+        if (payload.profile === 'enterprise') return send(200,enterpriseCase(enterpriseDefinition,payload.enterprise ?? {},scenario,path === '/api/optimize' ? null : payload.ids ?? []));
+        if (payload.profile && payload.profile !== 'midmarket') throw new RangeError('Unknown profile');
         const result = path === '/api/optimize' ? optimize(items,scenario) : portfolio(items,payload.ids ?? [],scenario);
         return send(200,{...result, uncertainty:simulate(items,result.ids,scenario)});
       }

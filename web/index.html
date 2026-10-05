@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="MarginOps: an auditable EBITDA improvement decision engine. Explore financial tradeoffs, optimize initiatives, and reconcile benefits to evidence.">
-  <title>MarginOps — Value Creation Workbench</title>
+  <title>MarginOps — Enterprise Value Creation</title>
   <link rel="stylesheet" href="/web/style.css"><script type="module" src="/web/app.mjs"></script>
 </head>
 <body>
@@ -13,15 +13,23 @@
     <nav aria-label="Main navigation">
       <button class="nav-item active" data-view="overview"><span>◈</span> Portfolio overview</button>
       <button class="nav-item" data-view="initiatives"><span>▦</span> Initiative workbench</button>
+      <button class="nav-item" data-view="drivers"><span>↗</span> Savings underwriting</button>
       <button class="nav-item" data-view="ledger"><span>≡</span> Benefits ledger</button>
       <button class="nav-item" data-view="methodology"><span>⌘</span> Model & methodology</button>
     </nav>
     <div class="sidebar-bottom"><div class="demo-dot"></div> SYNTHETIC DEMO<p>Transparent assumptions.<br>Measurable outcomes.</p><a href="https://github.com/kingtutt52/marginops" target="_blank" rel="noreferrer">Explore source ↗</a></div>
   </aside>
   <main>
-    <header class="topbar"><span>WORKSPACE <b>/</b> Meridian operating group <span class="pill">Demo</span></span><span class="top-right">USD · 12-month horizon <span class="avatar">MO</span></span></header>
+    <header class="topbar"><span>WORKSPACE <b>/</b> <span id="workspace-name">Meridian Global</span> <span class="pill">Demo</span></span><span class="top-right">USD · 12-month horizon <span class="avatar">MO</span></span></header>
     <section class="page-heading"><div><div class="eyebrow">THE VALUE CREATION WORKBENCH</div><h1 id="page-title">Turn operational decisions<br>into financial impact.</h1><p id="page-subtitle">Build the portfolio. Challenge the assumptions. Prove the value.</p></div><button id="export" class="button secondary">↓ Export investment memo</button></section>
     <div id="error" role="alert" hidden></div>
+    <section class="enterprise-scope panel" aria-label="Operating footprint">
+      <label>Operating profile<select id="profile"><option value="enterprise">Global enterprise · synthetic</option><option value="midmarket">Mid-market operating group</option></select></label>
+      <label>Operating locations<input id="sites" type="number" min="50" max="5000" step="50" value="1000"></label>
+      <div id="scope-summary" aria-live="polite"></div>
+      <button id="export-assumptions" class="button secondary">↓ Export underwriting JSON</button>
+      <p class="scope-note">ILLUSTRATIVE ONLY · Scaled spend and implementation costs assume comparable locations. Model outputs are not verified savings or a guarantee.</p>
+    </section>
     <section class="scenario panel" aria-label="Scenario controls">
       <div class="scenario-title"><span class="eyebrow">SCENARIO LAB</span><strong>Make the tradeoffs explicit.</strong><select id="preset" aria-label="Scenario preset"><option value="base">Base case</option><option value="downside">Downside case</option><option value="upside">Upside case</option></select></div>
       <label>Implementation budget <output id="budget-value"></output><input id="budget" type="range" min="0" max="1200000" step="25000" value="600000"></label>
@@ -32,9 +40,10 @@
     </section>
     <div class="status-line"><span id="selection-status" aria-live="polite"></span><button id="reset" class="text-button">Reset demo</button></div>
     <section id="metrics" class="metrics" aria-label="Portfolio metrics"></section>
+    <section id="savings-summary" class="panel savings-summary" aria-label="Savings reconciliation"></section>
     <div id="overview-view" class="view">
       <div class="chart-grid">
-        <section class="panel bridge-panel"><div class="panel-heading"><div><span class="eyebrow">FROM BASELINE TO UPSIDE</span><h2>EBITDA value bridge</h2></div><span class="pill">Expected · Year 1</span></div><div id="bridge" class="bridge"></div><p class="chart-note">Illustrative $8.0M baseline + selected initiatives. Implementation expenses and recurring costs are included.</p></section>
+        <section class="panel bridge-panel"><div class="panel-heading"><div><span class="eyebrow">FROM BASELINE TO UPSIDE</span><h2>EBITDA value bridge</h2></div><span class="pill">Expected · Year 1</span></div><div id="bridge" class="bridge"></div><p class="chart-note" id="baseline-note">Illustrative baseline + selected initiatives. Implementation expenses and recurring costs are included.</p></section>
         <section class="panel risk-panel"><div class="panel-heading"><div><span class="eyebrow">2,000 SEEDED SIMULATIONS</span><h2>Underwrite the uncertainty.</h2></div></div><div id="distribution"></div><p class="chart-note">Independent success events + a shared ±20% realization shock. Percentiles describe model outcomes, not guarantees.</p></section>
       </div>
       <div class="chart-grid lower-grid">
@@ -43,14 +52,20 @@
       </div>
     </div>
     <section id="initiatives-view" class="view" hidden><div class="panel"><div class="panel-heading"><div><span class="eyebrow">CAPITAL ALLOCATION</span><h2>A business case for every decision.</h2></div><input type="search" id="search" placeholder="Find an initiative…" aria-label="Search initiatives"></div><p class="chart-note top-note">Choose rows to build a custom portfolio. Expand an initiative to inspect its economics and evidence requirements.</p><div class="table-wrap"><table><thead><tr><th>Include</th><th>Initiative / owner</th><th>Year 1 EBITDA</th><th>Investment</th><th>Success</th><th>Effort</th><th>Details</th></tr></thead><tbody id="initiative-table"></tbody></table></div></div></section>
+    <section id="drivers-view" class="view" hidden><div class="panel"><div class="panel-heading"><div><span class="eyebrow">BOTTOM-UP UNDERWRITING</span><h2>Every billion starts with a spend pool.</h2></div><span class="pill">Session-only assumptions</span></div>
+      <p class="chart-note top-note">Annual gross cost benefit = addressable expense × reduction rate × adoption × expense conversion. Coverage and conversion are applied before probability and rollout. Revenue uses contribution margin separately. Shared pools are alternatives, never additive.</p>
+      <div id="driver-summary" class="driver-summary"></div>
+      <div class="table-wrap"><table><thead><tr><th>Lever / spend pool</th><th>Annual exposure</th><th>Rate %</th><th>Adoption %</th><th>Expense conversion %</th><th>Gross annual benefit</th></tr></thead><tbody id="driver-table"></tbody></table></div>
+      <p class="chart-note">All assumptions are invented for a portfolio demonstration. Replace them with finance-controlled expense baselines, contracted reductions and service-quality evidence. No public benchmark is implied.</p>
+    </div></section>
     <section id="ledger-view" class="view" hidden><div class="panel"><div class="panel-heading"><div><span class="eyebrow">EVIDENCE BEFORE CREDIT</span><h2>Recognized benefits ledger</h2></div><span class="pill">September 2026 · Synthetic</span></div><div class="ledger-summary" id="ledger-summary"></div><p class="chart-note top-note">Historical demonstration, independent of forecast selections. Only finance-approved rows contribute to recognized EBITDA.</p><div class="table-wrap"><table><thead><tr><th>Initiative / evidence</th><th>Observed</th><th>Counterfactual</th><th>Costs</th><th>Status</th><th>Recognized</th></tr></thead><tbody id="ledger-table"></tbody></table></div></div></section>
     <section id="methodology-view" class="view" hidden><div class="method-grid">
       <article class="panel prose"><span class="eyebrow">01 / FINANCIAL DISCIPLINE</span><h2>Every dollar has a definition.</h2><p>Cost initiatives count avoidable operating expense. Revenue initiatives count incremental revenue multiplied by contribution margin. Capacity released counts only after an expense reduction is evidenced.</p><div class="formula">Incremental EBITDA = probability-weighted gross benefit × realization × ramp − recurring opex − implementation expense</div><p>Capex reduces cash, not EBITDA. Receivables acceleration releases cash, not new revenue. All upfront investment occurs in month 1; operating costs begin at launch, including failed initiatives.</p><p>Run rate is a steady-state annualized expectation, not this year's result. Payback is the first month of nonnegative cumulative modeled cash and may be followed by later outflows.</p></article>
-      <article class="panel prose"><span class="eyebrow">02 / EXACT OPTIMIZATION</span><h2>A defensible portfolio.</h2><p>The engine enumerates every subset of the candidate set and maximizes expected 12-month incremental EBITDA. It enforces budget, delivery capacity, prerequisites and mutually exclusive benefit pools.</p><p>A shared service labor pool prevents claiming both automation and scheduling savings. A revenue pool prevents counting overlapping leakage and pricing opportunities twice.</p><p>Scope is deliberately bounded to 20 initiatives. Results are exact for the inputs, not a guarantee that the assumptions are correct. Dependencies represent delivery prerequisites, not conditional success probabilities.</p></article>
+      <article class="panel prose"><span class="eyebrow">02 / EXACT OPTIMIZATION</span><h2>A defensible portfolio.</h2><p>The engine enumerates every subset of the candidate set and maximizes expected 12-month incremental EBITDA. It enforces budget, delivery capacity, prerequisites and mutually exclusive benefit pools.</p><p>The enterprise case models distinct expense pools and explicit rate, adoption and expense-conversion assumptions. Shared overtime and automation alternatives cannot both earn credit. A shared service labor pool prevents claiming both automation and scheduling savings. A revenue pool prevents counting overlapping leakage and pricing opportunities twice.</p><p>Scope is deliberately bounded to 20 initiatives. Results are exact for the inputs, not a guarantee that the assumptions are correct. Dependencies represent delivery prerequisites, not conditional success probabilities.</p></article>
       <article class="panel prose"><span class="eyebrow">03 / VALUE ASSURANCE</span><h2>Forecasts become evidence.</h2><p>Recognized impact = observed benefit − counterfactual benefit − incremental operating costs − implementation expense. The ledger rejects duplicate period / benefit-pool combinations.</p><p>Approval requires an evidence reference, reviewer and approval date. This demo validates these fields; it does not authenticate reviewers or verify source documents. Production use needs controlled workflows, immutable storage and finance sign-off.</p></article>
       <article class="panel prose"><span class="eyebrow">04 / HONEST BOUNDARIES</span><h2>Engineered to be inspectable.</h2><p>All figures and organizations are synthetic. No employer data, customer records or API keys are used. Deterministic calculations drive every recommendation; there is no LLM inventing financial results.</p><p>EBITDA is a non-GAAP measure. This workbench models incremental impacts and does not provide a GAAP reconciliation or financial reporting system. The model excludes tax, financing, terminal value and detailed cash timing.</p><a href="https://www.sec.gov/rules-regulations/staff-guidance/corporation-finance-interpretations/non-gaap-financial-measures" target="_blank" rel="noreferrer">SEC non-GAAP guidance ↗</a></article>
     </div></section>
-    <footer><span class="brand-small">marginops</span><span>MODEL v1.0.0 <b>·</b> SYNTHETIC DATA <b>·</b> AUDITABLE BY DESIGN</span><span>Built for decisions that move the P&amp;L.</span></footer>
+    <footer><span class="brand-small">marginops</span><span>MODEL v2.0.0 <b>·</b> SYNTHETIC DATA <b>·</b> AUDITABLE BY DESIGN</span><span>Built for decisions that move the P&amp;L.</span></footer>
   </main>
   <dialog id="detail"><button id="close-detail" class="dialog-close" aria-label="Close initiative details">×</button><div id="detail-body"></div></dialog>
 </body>
