@@ -4,7 +4,7 @@
 
 All money is USD. The optimizer maximizes total expected incremental EBITDA over the configured horizon (12 months in the UI; 1–36 in the engine/API). All upfront expense and capex are committed in month 1. Delivery capacity is the sum of estimated team-months; it is not a resource scheduling calendar. The exact search supports at most 20 initiatives and has O(n × 2^n) time complexity.
 
-The engine does not round intermediate values. Presentation rounds to dollars or abbreviated thousands/millions. For production accounting, convert controlled amounts to a decimal representation with an explicit rounding policy.
+The engine does not round intermediate values. Presentation rounds to dollars or abbreviated thousands/millions/billions. For production accounting, convert controlled amounts to a decimal representation with an explicit rounding policy.
 
 ## Initiative economics
 
@@ -69,3 +69,20 @@ The synthetic September ledger is independent of the forward portfolio. Its reco
 ## Reference
 
 [SEC Non-GAAP Financial Measures C&DIs](https://www.sec.gov/rules-regulations/staff-guidance/corporation-finance-interpretations/non-gaap-financial-measures), especially Questions 100.01 and 103.01–103.02, discuss non-GAAP presentation and reconciliation. This planning prototype is not a substitute for finance-approved reporting or a GAAP reconciliation.
+
+
+## Enterprise underwriting and savings classification (v2)
+
+The global profile is a synthetic 1,000-location group, with $200B revenue and $108B distinct annual cost exposure. These are invented parameters, not market benchmarks. No software capability, customer outcome or actual saving is inferred from the displayed magnitude.
+
+Annual gross cost input = annual addressable expense × reduction rate × adoption coverage × expense conversion. Expense conversion is the fraction of operational improvements translated into removable operating costs; capacity without expense removal has conversion zero. Probability and rollout apply subsequently through the shared forecast engine. For revenue exposure, the bottom-up input is earned incremental revenue and the engine applies contribution margin.
+
+The premium-labor pool is shared by scheduling and automation alternatives. It contributes once to unique exposure; the builder rejects inconsistent shared-pool baselines or lack of mutual exclusion. Other expense pools are assumed disjoint by scope. Production integration must verify that separation at invoice/account/site level; a named pool is not proof of a non-overlapping baseline.
+
+Year 1 net cost savings sums expected EBITDA for selected cost-kind initiatives, including enabling cost initiatives with zero direct benefit. Recurring expected net cost savings sums their annualized steady-state net benefits. Neither includes revenue-kind benefit, revenue-program costs, cash release, or working-capital-program costs; those program costs still reduce total portfolio EBITDA. The bridge separately sums all expected gross cost benefit and revenue contribution, then deducts all recurring opex and implementation expense. Quarterly totals reconcile to the modeled horizon.
+
+Footprint scaling uses locations / 1,000, multiplying exposure, implementation expense, capex, recurring opex, cash-release assumptions and effort by the same factor. Rates, success probabilities and ramp schedules stay fixed. Budget and delivery capacity defaults scale too. This is a comparable-location scenario assumption, not a model of geography, mix, diminishing returns or economies of scale. Existing historical ledger data is never scaled.
+
+Editable rates are capped at 50% of their addressable exposure. This is an input sanity boundary, not a claim that rates below it are feasible. All reductions must preserve service, quality and compliance requirements and be backed by finance-approved counterfactuals and source records.
+
+See [the worked enterprise case](BILLION_DOLLAR_CASE.md) for full assumptions, scenario outputs and the reconciliation.
